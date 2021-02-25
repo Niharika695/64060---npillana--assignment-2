@@ -11,7 +11,7 @@
 
 <meta name="author" content="nihar" />
 
-<meta name="date" content="2021-02-24" />
+<meta name="date" content="2021-02-25" />
 
 <title>ML-Knn-model.R</title>
 
@@ -191,12 +191,14 @@ summary {
 
 <h1 class="title toc-ignore">ML-Knn-model.R</h1>
 <h4 class="author">nihar</h4>
-<h4 class="date">2021-02-24</h4>
+<h4 class="date">2021-02-25</h4>
 
 </div>
 
 
-<pre class="r"><code>UBCustomer&lt;- read.csv(&quot;UniversalBank.CSV&quot;, header = TRUE)
+<pre class="r"><code>#Importing data
+
+UBCustomer&lt;- read.csv(&quot;UniversalBank.CSV&quot;, header = TRUE)
 str(UBCustomer)</code></pre>
 <pre><code>## &#39;data.frame&#39;:    5000 obs. of  14 variables:
 ##  $ ID                : int  1 2 3 4 5 6 7 8 9 10 ...
@@ -225,9 +227,31 @@ library(dplyr)</code></pre>
 ## 
 ##     intersect, setdiff, setequal, union</code></pre>
 <pre class="r"><code>library(fastDummies)
-UBCustomer_dummy&lt;- dummy_cols(UBCustomer, select_columns = c(&quot;Personal.Loan&quot;))
+summary(UBCust)</code></pre>
+<pre><code>##       Age          Experience       Income           Family     
+##  Min.   :23.00   Min.   :-3.0   Min.   :  8.00   Min.   :1.000  
+##  1st Qu.:35.00   1st Qu.:10.0   1st Qu.: 39.00   1st Qu.:1.000  
+##  Median :45.00   Median :20.0   Median : 64.00   Median :2.000  
+##  Mean   :45.34   Mean   :20.1   Mean   : 73.77   Mean   :2.396  
+##  3rd Qu.:55.00   3rd Qu.:30.0   3rd Qu.: 98.00   3rd Qu.:3.000  
+##  Max.   :67.00   Max.   :43.0   Max.   :224.00   Max.   :4.000  
+##      CCAvg          Education        Mortgage     Personal.Loan  
+##  Min.   : 0.000   Min.   :1.000   Min.   :  0.0   Min.   :0.000  
+##  1st Qu.: 0.700   1st Qu.:1.000   1st Qu.:  0.0   1st Qu.:0.000  
+##  Median : 1.500   Median :2.000   Median :  0.0   Median :0.000  
+##  Mean   : 1.938   Mean   :1.881   Mean   : 56.5   Mean   :0.096  
+##  3rd Qu.: 2.500   3rd Qu.:3.000   3rd Qu.:101.0   3rd Qu.:0.000  
+##  Max.   :10.000   Max.   :3.000   Max.   :635.0   Max.   :1.000  
+##  Securities.Account   CD.Account         Online         CreditCard   
+##  Min.   :0.0000     Min.   :0.0000   Min.   :0.0000   Min.   :0.000  
+##  1st Qu.:0.0000     1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.000  
+##  Median :0.0000     Median :0.0000   Median :1.0000   Median :0.000  
+##  Mean   :0.1044     Mean   :0.0604   Mean   :0.5968   Mean   :0.294  
+##  3rd Qu.:0.0000     3rd Qu.:0.0000   3rd Qu.:1.0000   3rd Qu.:1.000  
+##  Max.   :1.0000     Max.   :1.0000   Max.   :1.0000   Max.   :1.000</code></pre>
+<pre class="r"><code>UBCustomer_dummy&lt;- dummy_cols(UBCustomer, select_columns = c(&quot;Education&quot;))
 
-#UBCustomer_dummy &lt;- dummy_cols(UBCustomer %&gt;% select = (-personal.loan))
+#UBCustomer_dummy &lt;- dummy_cols(UBCustomer %&gt;% select_columns = (-Personal.Loan))
 summary(UBCustomer_dummy)</code></pre>
 <pre><code>##        ID            Age          Experience       Income          ZIP.Code    
 ##  Min.   :   1   Min.   :23.00   Min.   :-3.0   Min.   :  8.00   Min.   : 9307  
@@ -250,13 +274,13 @@ summary(UBCustomer_dummy)</code></pre>
 ##  Mean   :0.096   Mean   :0.1044     Mean   :0.0604   Mean   :0.5968  
 ##  3rd Qu.:0.000   3rd Qu.:0.0000     3rd Qu.:0.0000   3rd Qu.:1.0000  
 ##  Max.   :1.000   Max.   :1.0000     Max.   :1.0000   Max.   :1.0000  
-##    CreditCard    Personal.Loan_0 Personal.Loan_1
-##  Min.   :0.000   Min.   :0.000   Min.   :0.000  
-##  1st Qu.:0.000   1st Qu.:1.000   1st Qu.:0.000  
-##  Median :0.000   Median :1.000   Median :0.000  
-##  Mean   :0.294   Mean   :0.904   Mean   :0.096  
-##  3rd Qu.:1.000   3rd Qu.:1.000   3rd Qu.:0.000  
-##  Max.   :1.000   Max.   :1.000   Max.   :1.000</code></pre>
+##    CreditCard     Education_1      Education_2      Education_3    
+##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.0000   Median :0.0000   Median :0.0000  
+##  Mean   :0.294   Mean   :0.4192   Mean   :0.2806   Mean   :0.3002  
+##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>#Remove Education column and using mutate which adds new variable and preserves the old one
 
 UBCustomer_dummy&lt;- UBCustomer_dummy %&gt;% select(-Education) %&gt;% mutate(Personal.Loan = UBCustomer$Personal.Loan)
@@ -282,13 +306,13 @@ summary(UBCustomer_dummy)</code></pre>
 ##  Mean   :0.1044     Mean   :0.0604   Mean   :0.5968   Mean   :0.294  
 ##  3rd Qu.:0.0000     3rd Qu.:0.0000   3rd Qu.:1.0000   3rd Qu.:1.000  
 ##  Max.   :1.0000     Max.   :1.0000   Max.   :1.0000   Max.   :1.000  
-##  Personal.Loan_0 Personal.Loan_1
-##  Min.   :0.000   Min.   :0.000  
-##  1st Qu.:1.000   1st Qu.:0.000  
-##  Median :1.000   Median :0.000  
-##  Mean   :0.904   Mean   :0.096  
-##  3rd Qu.:1.000   3rd Qu.:0.000  
-##  Max.   :1.000   Max.   :1.000</code></pre>
+##   Education_1      Education_2      Education_3    
+##  Min.   :0.0000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.0000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.0000   Median :0.0000   Median :0.0000  
+##  Mean   :0.4192   Mean   :0.2806   Mean   :0.3002  
+##  3rd Qu.:1.0000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.0000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>#to check null values present
 apply(UBCustomer,2,function(x){any(is.na(x))})</code></pre>
 <pre><code>##                 ID                Age         Experience             Income 
@@ -336,13 +360,13 @@ summary(UBCustomer_train)</code></pre>
 ##  Mean   :0.1033     Mean   :0.06333   Mean   :0.5957   Mean   :0.296  
 ##  3rd Qu.:0.0000     3rd Qu.:0.00000   3rd Qu.:1.0000   3rd Qu.:1.000  
 ##  Max.   :1.0000     Max.   :1.00000   Max.   :1.0000   Max.   :1.000  
-##  Personal.Loan_0  Personal.Loan_1  
-##  Min.   :0.0000   Min.   :0.00000  
-##  1st Qu.:1.0000   1st Qu.:0.00000  
-##  Median :1.0000   Median :0.00000  
-##  Mean   :0.9003   Mean   :0.09967  
-##  3rd Qu.:1.0000   3rd Qu.:0.00000  
-##  Max.   :1.0000   Max.   :1.00000</code></pre>
+##   Education_1     Education_2      Education_3    
+##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.0000   Median :0.0000  
+##  Mean   :0.426   Mean   :0.2727   Mean   :0.3013  
+##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>summary(UBCustomer_Valid)</code></pre>
 <pre><code>##        ID            Age         Experience        Income          ZIP.Code    
 ##  Min.   :   2   Min.   :23.0   Min.   :-3.00   Min.   :  8.00   Min.   :90005  
@@ -365,13 +389,13 @@ summary(UBCustomer_train)</code></pre>
 ##  Mean   :0.106      Mean   :0.056   Mean   :0.5985   Mean   :0.291  
 ##  3rd Qu.:0.000      3rd Qu.:0.000   3rd Qu.:1.0000   3rd Qu.:1.000  
 ##  Max.   :1.000      Max.   :1.000   Max.   :1.0000   Max.   :1.000  
-##  Personal.Loan_0  Personal.Loan_1 
-##  Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:1.0000   1st Qu.:0.0000  
-##  Median :1.0000   Median :0.0000  
-##  Mean   :0.9095   Mean   :0.0905  
-##  3rd Qu.:1.0000   3rd Qu.:0.0000  
-##  Max.   :1.0000   Max.   :1.0000</code></pre>
+##   Education_1     Education_2      Education_3    
+##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.0000   Median :0.0000  
+##  Mean   :0.409   Mean   :0.2925   Mean   :0.2985  
+##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>summary(UBCustomer_train_test)</code></pre>
 <pre><code>##        ID            Age          Experience        Income      
 ##  Min.   :   1   Min.   :23.00   Min.   :-3.00   Min.   :  8.00  
@@ -394,13 +418,13 @@ summary(UBCustomer_train)</code></pre>
 ##  Mean   :0.0985   Mean   :0.1025     Mean   :0.055   Mean   :0.5955  
 ##  3rd Qu.:0.0000   3rd Qu.:0.0000     3rd Qu.:0.000   3rd Qu.:1.0000  
 ##  Max.   :1.0000   Max.   :1.0000     Max.   :1.000   Max.   :1.0000  
-##    CreditCard    Personal.Loan_0  Personal.Loan_1 
-##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:0.000   1st Qu.:1.0000   1st Qu.:0.0000  
-##  Median :0.000   Median :1.0000   Median :0.0000  
-##  Mean   :0.294   Mean   :0.9015   Mean   :0.0985  
-##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:0.0000  
-##  Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
+##    CreditCard     Education_1     Education_2     Education_3   
+##  Min.   :0.000   Min.   :0.000   Min.   :0.000   Min.   :0.000  
+##  1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.000  
+##  Median :0.000   Median :0.000   Median :0.000   Median :0.000  
+##  Mean   :0.294   Mean   :0.405   Mean   :0.292   Mean   :0.303  
+##  3rd Qu.:1.000   3rd Qu.:1.000   3rd Qu.:1.000   3rd Qu.:1.000  
+##  Max.   :1.000   Max.   :1.000   Max.   :1.000   Max.   :1.000</code></pre>
 <pre class="r"><code>#Normalizing numeric data
 train.norm.df &lt;-UBCustomer_train
 Valid.norm.df &lt;-UBCustomer_Valid
@@ -436,13 +460,13 @@ summary(train.norm.df)</code></pre>
 ##  Mean   : 0.0000   Mean   : 0.0000    Mean   : 0.000   Mean   : 0.0000  
 ##  3rd Qu.:-0.3327   3rd Qu.:-0.3394    3rd Qu.:-0.260   3rd Qu.: 0.8238  
 ##  Max.   : 3.0051   Max.   : 2.9453    Max.   : 3.845   Max.   : 0.8238  
-##    CreditCard    Personal.Loan_0  Personal.Loan_1  
-##  Min.   :0.000   Min.   :0.0000   Min.   :0.00000  
-##  1st Qu.:0.000   1st Qu.:1.0000   1st Qu.:0.00000  
-##  Median :0.000   Median :1.0000   Median :0.00000  
-##  Mean   :0.296   Mean   :0.9003   Mean   :0.09967  
-##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:0.00000  
-##  Max.   :1.000   Max.   :1.0000   Max.   :1.00000</code></pre>
+##    CreditCard     Education_1     Education_2      Education_3    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.000   Median :0.0000   Median :0.0000  
+##  Mean   :0.296   Mean   :0.426   Mean   :0.2727   Mean   :0.3013  
+##  3rd Qu.:1.000   3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>var(train.norm.df[, 1:13])</code></pre>
 <pre><code>##                               ID           Age   Experience        Income
 ## ID                  1.0000000000  0.0118900913  0.010279125 -0.0170512138
@@ -522,13 +546,13 @@ summary(train.norm.df)</code></pre>
 ##  Mean   :-0.0306   Mean   : 0.008759   Mean   :-0.0301   Mean   : 0.005772  
 ##  3rd Qu.:-0.3327   3rd Qu.:-0.339416   3rd Qu.:-0.2600   3rd Qu.: 0.823751  
 ##  Max.   : 3.0051   Max.   : 2.945255   Max.   : 3.8451   Max.   : 0.823751  
-##    CreditCard    Personal.Loan_0  Personal.Loan_1 
-##  Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
-##  1st Qu.:0.000   1st Qu.:1.0000   1st Qu.:0.0000  
-##  Median :0.000   Median :1.0000   Median :0.0000  
-##  Mean   :0.291   Mean   :0.9095   Mean   :0.0905  
-##  3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:0.0000  
-##  Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
+##    CreditCard     Education_1     Education_2      Education_3    
+##  Min.   :0.000   Min.   :0.000   Min.   :0.0000   Min.   :0.0000  
+##  1st Qu.:0.000   1st Qu.:0.000   1st Qu.:0.0000   1st Qu.:0.0000  
+##  Median :0.000   Median :0.000   Median :0.0000   Median :0.0000  
+##  Mean   :0.291   Mean   :0.409   Mean   :0.2925   Mean   :0.2985  
+##  3rd Qu.:1.000   3rd Qu.:1.000   3rd Qu.:1.0000   3rd Qu.:1.0000  
+##  Max.   :1.000   Max.   :1.000   Max.   :1.0000   Max.   :1.0000</code></pre>
 <pre class="r"><code>var(Valid.norm.df[, 1:13])</code></pre>
 <pre><code>##                              ID          Age    Experience       Income
 ## ID                  0.991108998 -0.039281135 -0.0364628819 -0.016986237
@@ -596,7 +620,20 @@ library(class)</code></pre>
 ##     knn, knn.cv</code></pre>
 <pre class="r"><code>library(gmodels)
 
+#Inserting sample data and running KNN
+
+Sample &lt;- data.frame(Age = 40, Experience = 10, Income = 84, Family = 2, CCAvg = 2, 
+                      Mortgage = 0, Securities.Account = 0, CD.Account = 0, Online = 1, CreditCard = 1, Education_1 = 0, Education_2 = 1,Education_3 = 0)
+
+KNN_test_sample&lt;- knn(train.norm.df[, 1:13], Sample, cl = train.norm.df[, 3], k=1, prob = TRUE)
+
+#Choice of k = 1
+
 KNN_test&lt;- knn(train.norm.df[, 1:13], test.norm.df, cl = train.norm.df[, 3], k=1, prob = TRUE)
+
+
+#choice of k = 4
+KNN_test4&lt;- knn(train.norm.df[, 1:13], test.norm.df, cl = train.norm.df[, 3], k=4, prob = TRUE)
 summary(KNN_test)</code></pre>
 <pre><code>##    -2.01170574528395    -1.92450566963228    -1.83730559398061 
 ##                    1                    2                   10 
@@ -697,13 +734,13 @@ summary(train.norm.test.df)</code></pre>
 ##  Mean   : 0.0000   Mean   : 0.0000    Mean   : 0.0000   Mean   : 0.0000  
 ##  3rd Qu.:-0.3227   3rd Qu.:-0.3437    3rd Qu.:-0.2614   3rd Qu.: 0.8203  
 ##  Max.   : 3.0980   Max.   : 2.9088    Max.   : 3.8236   Max.   : 0.8203  
-##    CreditCard      Personal.Loan_0  Personal.Loan_1  
-##  Min.   :-0.6452   Min.   :0.0000   Min.   :0.00000  
-##  1st Qu.:-0.6452   1st Qu.:1.0000   1st Qu.:0.00000  
-##  Median :-0.6452   Median :1.0000   Median :0.00000  
-##  Mean   : 0.0000   Mean   :0.9057   Mean   :0.09433  
-##  3rd Qu.: 1.5494   3rd Qu.:1.0000   3rd Qu.:0.00000  
-##  Max.   : 1.5494   Max.   :1.0000   Max.   :1.00000</code></pre>
+##    CreditCard       Education_1      Education_2     Education_3    
+##  Min.   :-0.6452   Min.   :0.0000   Min.   :0.000   Min.   :0.0000  
+##  1st Qu.:-0.6452   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:0.0000  
+##  Median :-0.6452   Median :0.0000   Median :0.000   Median :0.0000  
+##  Mean   : 0.0000   Mean   :0.4287   Mean   :0.273   Mean   :0.2983  
+##  3rd Qu.: 1.5494   3rd Qu.:1.0000   3rd Qu.:1.000   3rd Qu.:1.0000  
+##  Max.   : 1.5494   Max.   :1.0000   Max.   :1.000   Max.   :1.0000</code></pre>
 <pre class="r"><code>summary(test.norm.df)</code></pre>
 <pre><code>##        ID                Age             Experience           Income        
 ##  Min.   :-1.74569   Min.   :-1.94476   Min.   :-2.00647   Min.   :-1.42695  
@@ -762,95 +799,95 @@ test2.norm.df&lt;- predict(norm.values, UBCustomer2_v.train_df[, 1:13])
 traval2.norm.df[, 1:13]&lt;- predict(norm.values,UBCustomer2_v.test_df[, 1:13] )
 
 summary(train2.norm.df)</code></pre>
-<pre><code>##        ID                Age             Experience           Income       
-##  Min.   :-1.71641   Min.   :-1.92418   Min.   :-1.99233   Min.   :-1.4104  
-##  1st Qu.:-0.85603   1st Qu.:-0.88100   1st Qu.:-0.85961   1st Qu.:-0.7601  
-##  Median :-0.03386   Median :-0.01168   Median : 0.01171   Median :-0.2182  
-##  Mean   : 0.00000   Mean   : 0.00000   Mean   : 0.00000   Mean   : 0.0000  
-##  3rd Qu.: 0.85777   3rd Qu.: 0.85763   3rd Qu.: 0.88303   3rd Qu.: 0.5405  
-##  Max.   : 1.75566   Max.   : 1.90082   Max.   : 1.92861   Max.   : 3.2718  
-##     ZIP.Code           Family            CCAvg            Mortgage      
-##  Min.   :-1.8064   Min.   :-1.2252   Min.   :-1.1058   Min.   :-0.5672  
-##  1st Qu.:-0.7065   1st Qu.:-1.2252   1st Qu.:-0.7039   1st Qu.:-0.5672  
-##  Median : 0.1339   Median :-0.3540   Median :-0.2446   Median :-0.5672  
-##  Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000   Mean   : 0.0000  
-##  3rd Qu.: 0.8189   3rd Qu.: 0.5171   3rd Qu.: 0.3295   3rd Qu.: 0.4355  
-##  Max.   : 1.9841   Max.   : 1.3882   Max.   : 4.6352   Max.   : 5.3909  
-##  Personal.Loan     Securities.Account   CD.Account          Online       
-##  Min.   :-0.3182   Min.   :-0.3435    Min.   :-0.2454   Min.   :-1.2296  
-##  1st Qu.:-0.3182   1st Qu.:-0.3435    1st Qu.:-0.2454   1st Qu.:-1.2296  
-##  Median :-0.3182   Median :-0.3435    Median :-0.2454   Median : 0.8129  
-##  Mean   : 0.0000   Mean   : 0.0000    Mean   : 0.0000   Mean   : 0.0000  
-##  3rd Qu.:-0.3182   3rd Qu.:-0.3435    3rd Qu.:-0.2454   3rd Qu.: 0.8129  
-##  Max.   : 3.1410   Max.   : 2.9097    Max.   : 4.0742   Max.   : 0.8129  
-##    CreditCard      Personal.Loan_0 Personal.Loan_1
-##  Min.   :-0.6415   Min.   :0.000   Min.   :0.000  
-##  1st Qu.:-0.6415   1st Qu.:1.000   1st Qu.:0.000  
-##  Median :-0.6415   Median :1.000   Median :0.000  
-##  Mean   : 0.0000   Mean   :0.908   Mean   :0.092  
-##  3rd Qu.: 1.5583   3rd Qu.:1.000   3rd Qu.:0.000  
-##  Max.   : 1.5583   Max.   :1.000   Max.   :1.000</code></pre>
+<pre><code>##        ID                Age              Experience           Income       
+##  Min.   :-1.73525   Min.   :-1.906267   Min.   :-1.97522   Min.   :-1.4400  
+##  1st Qu.:-0.85086   1st Qu.:-0.867637   1st Qu.:-0.84925   1st Qu.:-0.7701  
+##  Median :-0.01335   Median :-0.002112   Median : 0.01687   Median :-0.2082  
+##  Mean   : 0.00000   Mean   : 0.000000   Mean   : 0.00000   Mean   : 0.0000  
+##  3rd Qu.: 0.87174   3rd Qu.: 0.863413   3rd Qu.: 0.88300   3rd Qu.: 0.5697  
+##  Max.   : 1.73564   Max.   : 1.902043   Max.   : 2.00896   Max.   : 2.8172  
+##     ZIP.Code           Family           CCAvg            Mortgage      
+##  Min.   :-1.8305   Min.   :-1.213   Min.   :-1.1010   Min.   :-0.5521  
+##  1st Qu.:-0.7159   1st Qu.:-1.213   1st Qu.:-0.7104   1st Qu.:-0.5521  
+##  Median : 0.2217   Median :-0.355   Median :-0.2641   Median :-0.5521  
+##  Mean   : 0.0000   Mean   : 0.000   Mean   : 0.0000   Mean   : 0.0000  
+##  3rd Qu.: 0.8074   3rd Qu.: 1.362   3rd Qu.: 0.3497   3rd Qu.: 0.4280  
+##  Max.   : 1.9782   Max.   : 1.362   Max.   : 4.4784   Max.   : 5.5071  
+##  Personal.Loan     Securities.Account   CD.Account          Online      
+##  Min.   :-0.3318   Min.   :-0.3406    Min.   :-0.2454   Min.   :-1.223  
+##  1st Qu.:-0.3318   1st Qu.:-0.3406    1st Qu.:-0.2454   1st Qu.:-1.223  
+##  Median :-0.3318   Median :-0.3406    Median :-0.2454   Median : 0.817  
+##  Mean   : 0.0000   Mean   : 0.0000    Mean   : 0.0000   Mean   : 0.000  
+##  3rd Qu.:-0.3318   3rd Qu.:-0.3406    3rd Qu.:-0.2454   3rd Qu.: 0.817  
+##  Max.   : 3.0128   Max.   : 2.9346    Max.   : 4.0742   Max.   : 0.817  
+##    CreditCard       Education_1      Education_2     Education_3    
+##  Min.   :-0.6439   Min.   :0.0000   Min.   :0.000   Min.   :0.0000  
+##  1st Qu.:-0.6439   1st Qu.:0.0000   1st Qu.:0.000   1st Qu.:0.0000  
+##  Median :-0.6439   Median :0.0000   Median :0.000   Median :0.0000  
+##  Mean   : 0.0000   Mean   :0.4324   Mean   :0.278   Mean   :0.2896  
+##  3rd Qu.: 1.5523   3rd Qu.:1.0000   3rd Qu.:1.000   3rd Qu.:1.0000  
+##  Max.   : 1.5523   Max.   :1.0000   Max.   :1.000   Max.   :1.0000</code></pre>
 <pre class="r"><code>var(train2.norm.df[, 1:13])</code></pre>
-<pre><code>##                              ID          Age    Experience        Income
-## ID                  1.000000000 -0.042197112 -0.0444586599 -0.0041666363
-## Age                -0.042197112  1.000000000  0.9939688279 -0.0572581559
-## Experience         -0.044458660  0.993968828  1.0000000000 -0.0496327350
-## Income             -0.004166636 -0.057258156 -0.0496327350  1.0000000000
-## ZIP.Code           -0.009600122 -0.026841243 -0.0284849699 -0.0679562970
-## Family             -0.001362941 -0.036683947 -0.0411695074 -0.1586569446
-## CCAvg              -0.015308686 -0.054245071 -0.0533630044  0.6444368416
-## Mortgage           -0.017266726 -0.001434577 -0.0003265556  0.2262101207
-## Personal.Loan      -0.008897661 -0.020085202 -0.0200320784  0.4988419466
-## Securities.Account -0.014939774  0.016581346  0.0167287920 -0.0056306007
-## CD.Account         -0.001953261  0.035449110  0.0387190712  0.1558539284
-## Online              0.004445682  0.037639048  0.0396873440  0.0045369165
-## CreditCard          0.002133370  0.026402177  0.0265362494 -0.0008091619
-##                        ZIP.Code       Family        CCAvg      Mortgage
-## ID                 -0.009600122 -0.001362941 -0.015308686 -0.0172667258
-## Age                -0.026841243 -0.036683947 -0.054245071 -0.0014345767
-## Experience         -0.028484970 -0.041169507 -0.053363004 -0.0003265556
-## Income             -0.067956297 -0.158656945  0.644436842  0.2262101207
-## ZIP.Code            1.000000000  0.039352754 -0.023040841 -0.0040708192
-## Family              0.039352754  1.000000000 -0.111281984 -0.0354404826
-## CCAvg              -0.023040841 -0.111281984  1.000000000  0.1101067000
-## Mortgage           -0.004070819 -0.035440483  0.110106700  1.0000000000
-## Personal.Loan      -0.011570313  0.054899631  0.336801775  0.1420002844
-## Securities.Account  0.016861098  0.013280107 -0.005122176 -0.0021787195
-## CD.Account          0.013675182  0.020013167  0.117663591  0.0691860623
-## Online              0.007195954  0.010942216  0.005312483 -0.0203589244
-## CreditCard          0.022987947  0.015132775 -0.011984989 -0.0143033780
-##                    Personal.Loan Securities.Account   CD.Account        Online
-## ID                  -0.008897661       -0.014939774 -0.001953261  0.0044456825
-## Age                 -0.020085202        0.016581346  0.035449110  0.0376390476
-## Experience          -0.020032078        0.016728792  0.038719071  0.0396873440
-## Income               0.498841947       -0.005630601  0.155853928  0.0045369165
-## ZIP.Code            -0.011570313        0.016861098  0.013675182  0.0071959542
-## Family               0.054899631        0.013280107  0.020013167  0.0109422155
-## CCAvg                0.336801775       -0.005122176  0.117663591  0.0053124830
-## Mortgage             0.142000284       -0.002178720  0.069186062 -0.0203589244
-## Personal.Loan        1.000000000       -0.010303418  0.286621577 -0.0154374660
-## Securities.Account  -0.010303418        1.000000000  0.292435104 -0.0024675748
-## CD.Account           0.286621577        0.292435104  1.000000000  0.1642277367
-## Online              -0.015437466       -0.002467575  0.164227737  1.0000000000
-## CreditCard           0.015018038       -0.011404440  0.298836508  0.0002553145
-##                       CreditCard
-## ID                  0.0021333702
-## Age                 0.0264021768
-## Experience          0.0265362494
-## Income             -0.0008091619
-## ZIP.Code            0.0229879466
-## Family              0.0151327754
-## CCAvg              -0.0119849886
-## Mortgage           -0.0143033780
-## Personal.Loan       0.0150180375
-## Securities.Account -0.0114044404
-## CD.Account          0.2988365080
-## Online              0.0002553145
-## CreditCard          1.0000000000</code></pre>
+<pre><code>##                              ID           Age   Experience       Income
+## ID                  1.000000000  0.0222874955  0.022424158 -0.011939504
+## Age                 0.022287496  1.0000000000  0.994255776 -0.041555921
+## Experience          0.022424158  0.9942557756  1.000000000 -0.035086575
+## Income             -0.011939504 -0.0415559214 -0.035086575  1.000000000
+## ZIP.Code            0.027430683 -0.0306313076 -0.034647541 -0.031851003
+## Family             -0.020477285 -0.0515826707 -0.060344845 -0.178788243
+## CCAvg              -0.021230938 -0.0282040890 -0.028528767  0.655165608
+## Mortgage           -0.007342479 -0.0197038444 -0.019897475  0.219468217
+## Personal.Loan      -0.007383440 -0.0035969531 -0.004484897  0.499878321
+## Securities.Account -0.032365671 -0.0108155622 -0.010369926 -0.003544627
+## CD.Account         -0.003782083 -0.0008175694  0.002045285  0.149031686
+## Online              0.012063611  0.0246945881  0.024469947  0.011184122
+## CreditCard          0.012508285  0.0095931715  0.012239191  0.022190346
+##                        ZIP.Code      Family        CCAvg     Mortgage
+## ID                  0.027430683 -0.02047729 -0.021230938 -0.007342479
+## Age                -0.030631308 -0.05158267 -0.028204089 -0.019703844
+## Experience         -0.034647541 -0.06034485 -0.028528767 -0.019897475
+## Income             -0.031851003 -0.17878824  0.655165608  0.219468217
+## ZIP.Code            1.000000000  0.02079549 -0.007031616 -0.016559293
+## Family              0.020795490  1.00000000 -0.110288782 -0.032479833
+## CCAvg              -0.007031616 -0.11028878  1.000000000  0.118129622
+## Mortgage           -0.016559293 -0.03247983  0.118129622  1.000000000
+## Personal.Loan      -0.004855865  0.05103397  0.386747982  0.131363774
+## Securities.Account -0.001740370  0.04326774  0.015337149 -0.005171936
+## CD.Account          0.035104122  0.02265214  0.121072979  0.087141515
+## Online              0.004991326  0.03364859  0.009501033 -0.012915515
+## CreditCard          0.052317720 -0.03105406  0.014512736 -0.017173261
+##                    Personal.Loan Securities.Account    CD.Account       Online
+## ID                  -0.007383440       -0.032365671 -0.0037820830  0.012063611
+## Age                 -0.003596953       -0.010815562 -0.0008175694  0.024694588
+## Experience          -0.004484897       -0.010369926  0.0020452846  0.024469947
+## Income               0.499878321       -0.003544627  0.1490316857  0.011184122
+## ZIP.Code            -0.004855865       -0.001740370  0.0351041220  0.004991326
+## Family               0.051033973        0.043267742  0.0226521436  0.033648591
+## CCAvg                0.386747982        0.015337149  0.1210729788  0.009501033
+## Mortgage             0.131363774       -0.005171936  0.0871415154 -0.012915515
+## Personal.Loan        1.000000000        0.009678730  0.3001200769  0.019933675
+## Securities.Account   0.009678730        1.000000000  0.3070215599  0.010975361
+## CD.Account           0.300120077        0.307021560  1.0000000000  0.179372190
+## Online               0.019933675        0.010975361  0.1793721902  1.000000000
+## CreditCard          -0.002097561       -0.032330778  0.2595322332  0.022404001
+##                      CreditCard
+## ID                  0.012508285
+## Age                 0.009593171
+## Experience          0.012239191
+## Income              0.022190346
+## ZIP.Code            0.052317720
+## Family             -0.031054062
+## CCAvg               0.014512736
+## Mortgage           -0.017173261
+## Personal.Loan      -0.002097561
+## Securities.Account -0.032330778
+## CD.Account          0.259532233
+## Online              0.022404001
+## CreditCard          1.000000000</code></pre>
 <pre class="r"><code>var(train2.norm.df[, 1:2])</code></pre>
-<pre><code>##              ID         Age
-## ID   1.00000000 -0.04219711
-## Age -0.04219711  1.00000000</code></pre>
+<pre><code>##            ID       Age
+## ID  1.0000000 0.0222875
+## Age 0.0222875 1.0000000</code></pre>
 <pre class="r"><code>#DataModeling with best model is k = 4
 KNN2 &lt;- knn(train = train2.norm.df[, 1:13], test = test2.norm.df, cl=train2.norm.df$Personal.Loan, k=4, prob = TRUE)
 
@@ -875,21 +912,21 @@ CrossTable(x=Test_label, y =KNN2, prop.chisq = FALSE)</code></pre>
 ## 
 ##  
 ##              | KNN2 
-##   Test_label | -0.318246849581771 |   3.14095803717661 |          Row Total | 
-## -------------|--------------------|--------------------|--------------------|
-##            0 |               1349 |                  0 |               1349 | 
-##              |              1.000 |              0.000 |              0.899 | 
-##              |              1.000 |              0.000 |                    | 
-##              |              0.899 |              0.000 |                    | 
-## -------------|--------------------|--------------------|--------------------|
-##            1 |                  0 |                151 |                151 | 
-##              |              0.000 |              1.000 |              0.101 | 
-##              |              0.000 |              1.000 |                    | 
-##              |              0.000 |              0.101 |                    | 
-## -------------|--------------------|--------------------|--------------------|
-## Column Total |               1349 |                151 |               1500 | 
-##              |              0.899 |              0.101 |                    | 
-## -------------|--------------------|--------------------|--------------------|
+##   Test_label | -0.33178348993256 |  3.01280814245212 |         Row Total | 
+## -------------|-------------------|-------------------|-------------------|
+##            0 |              1348 |                 0 |              1348 | 
+##              |             1.000 |             0.000 |             0.899 | 
+##              |             1.000 |             0.000 |                   | 
+##              |             0.899 |             0.000 |                   | 
+## -------------|-------------------|-------------------|-------------------|
+##            1 |                 0 |               152 |               152 | 
+##              |             0.000 |             1.000 |             0.101 | 
+##              |             0.000 |             1.000 |                   | 
+##              |             0.000 |             0.101 |                   | 
+## -------------|-------------------|-------------------|-------------------|
+## Column Total |              1348 |               152 |              1500 | 
+##              |             0.899 |             0.101 |                   | 
+## -------------|-------------------|-------------------|-------------------|
 ## 
 ## </code></pre>
 <pre class="r"><code>row.names(UBCustomer_train)[attr(KNN2,&quot;KNN2.index&quot;)]</code></pre>

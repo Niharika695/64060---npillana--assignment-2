@@ -1,3 +1,5 @@
+#Importing data
+
 UBCustomer<- read.csv("UniversalBank.CSV", header = TRUE)
 str(UBCustomer)
 
@@ -5,14 +7,16 @@ str(UBCustomer)
 UBCust<- UBCustomer[-c(1,5)]
 library(dplyr)
 library(fastDummies)
-UBCustomer_dummy<- dummy_cols(UBCustomer, select_columns = c("Personal.Loan"))
+summary(UBCust)
+UBCustomer_dummy<- dummy_cols(UBCustomer, select_columns = c("Education"))
 
-#UBCustomer_dummy <- dummy_cols(UBCustomer %>% select = (-personal.loan))
+#UBCustomer_dummy <- dummy_cols(UBCustomer %>% select_columns = (-Personal.Loan))
 summary(UBCustomer_dummy)
 #Remove Education column and using mutate which adds new variable and preserves the old one
 
 UBCustomer_dummy<- UBCustomer_dummy %>% select(-Education) %>% mutate(Personal.Loan = UBCustomer$Personal.Loan)
 summary(UBCustomer_dummy)
+
 #to check null values present
 apply(UBCustomer,2,function(x){any(is.na(x))})
 library(dplyr)
@@ -55,7 +59,20 @@ library(FNN)
 library(class)
 library(gmodels)
 
+#Inserting sample data and running KNN
+
+Sample <- data.frame(Age = 40, Experience = 10, Income = 84, Family = 2, CCAvg = 2, 
+                      Mortgage = 0, Securities.Account = 0, CD.Account = 0, Online = 1, CreditCard = 1, Education_1 = 0, Education_2 = 1,Education_3 = 0)
+
+KNN_test_sample<- knn(train.norm.df[, 1:13], Sample, cl = train.norm.df[, 3], k=1, prob = TRUE)
+
+#Choice of k = 1
+
 KNN_test<- knn(train.norm.df[, 1:13], test.norm.df, cl = train.norm.df[, 3], k=1, prob = TRUE)
+
+
+#choice of k = 4
+KNN_test4<- knn(train.norm.df[, 1:13], test.norm.df, cl = train.norm.df[, 3], k=4, prob = TRUE)
 summary(KNN_test)
 
 row.names(UBCustomer_train)[attr(KNN_test,"KNN_test.index")]
