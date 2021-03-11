@@ -11,7 +11,7 @@
 
 <meta name="author" content="nihar" />
 
-<meta name="date" content="2021-03-07" />
+<meta name="date" content="2021-03-11" />
 
 <title>Assignment3-NB.R</title>
 
@@ -191,7 +191,7 @@ summary {
 
 <h1 class="title toc-ignore">Assignment3-NB.R</h1>
 <h4 class="author">nihar</h4>
-<h4 class="date">2021-03-07</h4>
+<h4 class="date">2021-03-11</h4>
 
 </div>
 
@@ -357,11 +357,11 @@ table(train[,c(14,10)])#credit card against personal.loan</code></pre>
 
 # P(Loan = 1 | CC = 1, Online = 1) = ((89/89+220)*(220/220+89)*(309/309+2691))/((89/89+220)*(220/220+89)*(309/309+2691))+((770/770+1921)*(1617/1617+1074)*(2691/2691+309))
 # =((89/309)*(220/2141)*(309/3000))/((89/309)*(220/2141)*(309/3000))+((770/2691)*(1617/2691)*(2691/3000))
-# =(0.288*0.711*0.103)/((0.288*0.711*0.103)+(0.286*0.6*0.897)) = 0.021/0.021+0.00046 = 0.021/0.02146 =0.978
+# =(0.288*0.711*0.103)/((0.288*0.711*0.103)+(0.286*0.6*0.897)) = 0.021/0.021+0.154 = 0.021/0.175 =0.125
 
 
 # f)Compare this value with the one obtained from the pivot table in (B). Which is a more accurate estimate?
-#the value obtained from pivot table is 0.101~0.978 . Both the vales are approximately equal.
+#the value obtained from pivot table is 0.101~0.125 . Both the vales are approximately equal.
 
 
 #Implementing Naive Bayes Model
@@ -390,7 +390,7 @@ NB_model</code></pre>
 ##   0 0.6008919 0.4898061
 ##   1 0.6245955 0.4850126</code></pre>
 <pre class="r"><code># the Navie Bayes out is nearly equal to the output derived from e.
-#0.103~0.978</code></pre>
+#0.103~0.125</code></pre>
 
 
 

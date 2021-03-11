@@ -79,11 +79,11 @@ table(train[,c(10)])#personal.loan
 
 # P(Loan = 1 | CC = 1, Online = 1) = ((89/89+220)*(220/220+89)*(309/309+2691))/((89/89+220)*(220/220+89)*(309/309+2691))+((770/770+1921)*(1617/1617+1074)*(2691/2691+309))
 # =((89/309)*(220/2141)*(309/3000))/((89/309)*(220/2141)*(309/3000))+((770/2691)*(1617/2691)*(2691/3000))
-# =(0.288*0.711*0.103)/((0.288*0.711*0.103)+(0.286*0.6*0.897)) = 0.021/0.021+0.00046 = 0.021/0.02146 =0.978
+# =(0.288*0.711*0.103)/((0.288*0.711*0.103)+(0.286*0.6*0.897)) = 0.021/0.021+0.154 = 0.021/0.175 =0.125
 
 
 # f)Compare this value with the one obtained from the pivot table in (B). Which is a more accurate estimate?
-#the value obtained from pivot table is 0.101~0.978 . Both the vales are approximately equal.
+#the value obtained from pivot table is 0.101~0.125 . Both the vales are approximately equal.
 
 
 #Implementing Naive Bayes Model
@@ -92,7 +92,7 @@ NB_model<- naiveBayes(Personal.Loan~CreditCard+Online, data = train)
 NB_model
 
 # the Navie Bayes out is nearly equal to the output derived from e.
-#0.103~0.978
+#0.103~0.125
 
 
 
