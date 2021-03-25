@@ -1,0 +1,46 @@
+---
+title: "ML Assignment"
+author: "Niharika Pillanagoyala"
+date: "2/2/2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+getwd()
+```
+
+```{r}
+setwd("C:/Users/nihar/Desktop")
+
+```
+```{r}
+mydata <-read.csv("Mall_Customers.csv", header = TRUE)
+```
+```{r}
+mydata
+```
+
+
+```{r}
+summary(mydata)
+```
+
+```{r}
+sapply(mydata, mode)
+```
+
+```{r}
+transform(mydata, Annual.Income = as.integer(Annual.Income))
+```
+```{r}
+attach(mydata)
+plot(Age, Annual.Income, main="scatterplot", xlab="Age ", ylab="Annual.Income in K$ ")
+
+```
+
