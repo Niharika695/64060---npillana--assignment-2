@@ -1,0 +1,16 @@
+1.	Importing Data
+2.	Creating dummy variables for education and binding them into the data frame
+3.	Partitioning data into Training and Validation and creating the test customer data frame
+4.	Normalizing data using caret
+5.	kNN on validation data
+6.	Hypertuning k
+7.	Based on the results, choose k
+8.	Renormalizing data using full dataset
+9.	running kNN with the selected k on the created customer data
+Part 2:
+1.	Splitting data into three parts: train, validation, and test.
+2.	Normalizing all the datasets with training dataset
+3.	Running kNN on training and validation
+4.	Normalizing test dataset with combined Training and Validation Data
+5.	Running kNN on test dataset
+6.	Comparing confusion matrices
