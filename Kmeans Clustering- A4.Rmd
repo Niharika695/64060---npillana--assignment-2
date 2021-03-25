@@ -1,8 +1,11 @@
 ---
-title: "test"
+title: "KMean Clustering"
 author: "Niharika Pillanagoyala"
 date: "3/21/2021"
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
+  word_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -53,7 +56,7 @@ grid.arrange(Plot1,plot2,plot3, nrow = 2)
 ```
 
 Determining optimal clusters using Elbow method
-```{r,message=FALSE, warning=FALSE, fig.width=10}
+```{r}
 
 distance<- dist(dataframe, method = "euclidean")# for calculating distance matrix between rows of a data matrix.
 fviz_dist(distance)# Visualizing a distance matrix
@@ -64,21 +67,21 @@ tot.withinss is total within-cluster sum of squares
 Compute and plot wss for k = 1 to k = 10
 extract wss for 2-15 clusters
 The location of a bend (knee) in the plot is generally considered as an indicator of the appropriate number of clusters k =5.
-```{r,message=FALSE, warning=FALSE, fig.width=20}
+```{r}
 set.seed(123)
 wss<- function(k){
   kmeans(dataframe, k, nstart =10)$tot.withinss
 }
 k.values<- 1:10 
 wss_clusters<- map_dbl(k.values, wss)
-graphics.off()
+
 plot(k.values, wss_clusters,
  type="b", pch = 16, frame = TRUE, 
 xlab="Number of clusters",
 ylab="Total within-clusters sum of squares")
 ```
 Final analysis and Extracting results using 5 clusters and Visualize the results
-```{r, message=FALSE, warning=FALSE, fig.width=10}
+```{r}
 set.seed(123)
 final<- kmeans(dataframe, 5, nstart = 25)
 print(final)
