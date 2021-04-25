@@ -1,0 +1,220 @@
+---
+title: "Hierarchical Cluster"
+author: "Niharika Pillanagoyala"
+date: "24/04/2021"
+output: html_document
+---
+
+Setting up working directory
+```{r}
+setwd("C:/Users/nihar/Desktop/Assignment/ML/HC")
+set.seed(123)
+```
+
+Importing required library.
+
+```{r}
+library(cluster)
+library(caret)
+library(dendextend)
+library(knitr)
+library(factoextra)
+```
+
+Importing the cereals dataset.
+
+```{r}
+library(readr)
+cereals<-read.csv("Cereals.csv")
+
+DataFrame <- data.frame(cereals[,4:16])
+
+```
+
+To remove any missing value that might be present in the data.
+
+```{r}
+OmitMissing <- na.omit(DataFrame)
+```
+
+Normalizing the Data using Scale.
+
+```{r}
+Normalise <- scale(OmitMissing)
+```
+
+Computing the dissimilarity matrix values by using Dist.
+
+```{r}
+d <- dist(Normalise, method = "euclidean")
+```
+
+Perform Hierarchical Clustering using complete linkage.
+
+```{r}
+HC <- hclust(d, method = "complete")
+```
+
+Plotting the dendogram.
+
+```{r}
+plot(HC, cex = 0.6, hang = -1)
+```
+We can also use agnes() function to perform clustering. performing clustering using agnes() with single, complete, average and ward.
+
+```{r}
+HCsingle <- agnes(Normalise, method = "single")
+HCcomplete <- agnes(Normalise, method = "complete")
+HCaverage <- agnes(Normalise, method = "average")
+HCward <- agnes(Normalise, method = "ward")
+
+```
+
+Now we will compare the agglomerative coefficients,
+For Single,complete, average and ward.
+
+```{r}
+print(HCsingle$ac)
+print(HCcomplete$ac)
+print(HCaverage$ac)
+print(HCward$ac)
+```
+
+The results says that the wards method is the best with the value of 0.904.
+Plotting the agnes using ward method and Cutting the Dendogram. We will take k = 4 by observing the distance.
+
+```{r}
+pltree(HCward, cex = 0.6, hang = -1, main = "Dendrogram of agnes-Ward")
+```
+
+Wards Method and Cut trees into 4 groups.
+
+```{r}
+HC1 <- hclust(d, method = "ward.D2" )
+subgrp <- cutree(HC1, k = 4)
+table(subgrp)
+dataframe <- as.data.frame(cbind(Normalise,subgrp))
+```
+
+The argument border is used to specify the border colors for the rectangles.
+
+```{r}
+plot(HC1, cex = 0.6)
+rect.hclust(HC1, k = 4, border = 2:5)#
+```
+
+to visualise the results in scatter plot.
+
+```{r}
+
+fviz_cluster(list(data = Normalise, cluster = subgrp))
+```
+
+Comment on the structure of the clusters and on their stability.
+Dividing the data and creating the partitions.
+
+```{r}
+Datapart1 <- OmitMissing[1:50,]
+Datapart2 <- OmitMissing[51:74,]
+```
+
+Performing clustering using agnes() with single, complete, average and ward with partitioned data.
+
+```{r}
+Award <- agnes(scale(Datapart1), method = "ward")
+Aaverage <- agnes(scale(Datapart1), method = "average")
+Acomplete <- agnes(scale(Datapart1), method = "complete")
+Asingle <- agnes(scale(Datapart1), method = "single")
+cbind(ward=Award$ac, average=Aaverage$ac, complete=Acomplete$ac, 
+      single=Asingle$ac)
+```
+
+Plot dendogram for the partitioned data.
+
+```{r}
+pltree(Award, cex = 0.6, hang = -1, main = "Dendogram of Agnes-Ward")
+rect.hclust(Award, k = 3, border = 2:5)
+```
+
+Cuttress using agnes into group of data.
+
+```{r}
+
+c <- cutree(Award, k = 4)
+
+```
+
+Calculating centers.
+
+```{r}
+result <- as.data.frame(cbind(Datapart1,c))
+
+result[result$c==1,]
+c1 <- colMeans(result[result$c==1,])
+result[result$c==2,]
+c2 <- colMeans(result[result$c==2,])
+result[result$c==3,]
+c3 <- colMeans(result[result$c==3,])
+result[result$c==4,]
+c4 <- colMeans(result[result$c==4,])
+```
+
+Binding the 4 centers.
+
+```{r}
+centers <- rbind(c1,c2,c3,c4)
+d1 <- as.data.frame(rbind(centers[,-14], Datapart2))
+
+```
+
+Calculating Distance.
+
+```{r}
+d2 <- get_dist(d1)
+matrix <- as.matrix(d2)
+df1 <- data.frame(data=seq(1,nrow(Datapart2),1),clusters=rep(0,nrow(Datapart2)))
+
+for(i in 1:nrow(Datapart2)) {
+  
+  df1[i,2] <- which.min(matrix[i+4, 1:4])
+}
+
+df1
+
+cbind(dataframe$cluster1[51:74], df1$clusters)
+table(dataframe$cluster1[51:74] == df1$clusters)
+```
+
+From above Results , 12 are FALSE out of 19, so we can say that the model is not stable.
+
+```{r}
+
+```
+
+Cluster of Healthy Cereals.
+
+```{r}
+newdata <- cereals
+newdata_omit <- na.omit(newdata)
+
+Clust <- cbind(newdata_omit, subgrp)
+
+Clust[Clust$subgrp==1,]
+Clust[Clust$subgrp==2,]
+Clust[Clust$subgrp==3,]
+Clust[Clust$subgrp==4,]
+
+```
+
+Calculating mean ratings to determine the best cluster.
+
+```{r}
+
+mean(Clust[Clust$subgrp==1,"rating"])
+mean(Clust[Clust$subgrp==2,"rating"])
+mean(Clust[Clust$subgrp==3,"rating"])
+mean(Clust[Clust$subgrp==4,"rating"])
+
+```
+
+As we can see that the mean ratings for the subgrp==1 is the highest its 73.84. So its a  best option to choose cluster 1.
