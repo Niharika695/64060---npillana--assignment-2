@@ -22,7 +22,8 @@ library(knitr)
 library(factoextra)
 ```
 
-Importing the cereals dataset.
+# Data Importing
+### cereals dataset
 
 ```{r}
 library(readr)
@@ -31,38 +32,42 @@ cereals<-read.csv("Cereals.csv")
 DataFrame <- data.frame(cereals[,4:16])
 
 ```
-
+# Data Pre-Processing
 To remove any missing value that might be present in the data.
 
 ```{r}
 OmitMissing <- na.omit(DataFrame)
 
 ```
-
+# Data Normalization
+### Data Scaling
 Normalizing the Data using Scale function.
-
 ```{r}
 Normalise <- scale(OmitMissing)
 ```
 
+### Using the euclidean distance to measure the distance
 Computing the dissimilarity matrix values by using Dist and the method is Euclidean.
 
 ```{r}
 d <- dist(Normalise, method = "euclidean")
+
 ```
 
 Perform Hierarchical Clustering using complete linkage.
 
 ```{r}
 HC <- hclust(d, method = "complete")
+plot(HC)
 ```
-
 Plotting the dendogram.
 
 ```{r}
 round(HC$height, 3)
 
 ```
+### Determining Optimal Clusters
+
 Highliting the clusters directly in dendogram
 ```{r}
 plot(HC)
@@ -72,7 +77,9 @@ rect.hclust(HC,
 )
 
 ```
-We can also use agnes() function to perform clustering. Performing clustering using agnes() with single, complete, average and ward.
+
+>>We can also use agnes() function to perform clustering.
+>>Performing clustering using agnes() with single, complete, average and ward.
 
 ```{r}
 HCsingle <- agnes(Normalise, method = "single")
@@ -91,14 +98,14 @@ print(HCaverage$ac)
 print(HCward$ac)
 ```
 
-The results says that the wards method is the best with the value of 0.904.
+>>The results says that the wards method is the best with the value of 0.904.
 Plotting the agnes using ward method and Cutting the Dendrogram. We will take k = 4 by observing the distance.
 
 ```{r}
 pltree(HCward, cex = 0.6, hang = -1, main = "Dendrogram of agnes-Ward")
 ```
 
-Using Wards Method and Cut trees into 4 groups.
+>> Hierarchical clustering using ward method.
 
 ```{r}
 HC1 <- hclust(d, method = "ward.D2" )
@@ -107,14 +114,14 @@ table(subgrp)
 dataframe <- as.data.frame(cbind(Normalise,subgrp))
 ```
 
-to visualise the results in scatter plot.
+###To visualiZe the results in scatter plot.
 
 ```{r}
 fviz_cluster(list(data = Normalise, cluster = subgrp))
 ```
 
-To check the structure of the clusters and on their stability.
-We will partition the data and apply  one part to the other part 
+>>To check the structure of the clusters and on their stability.
+We will partition the data and apply one part to the other part 
 
 ```{r}
 Datapart1 <- OmitMissing[1:50,]
@@ -132,7 +139,7 @@ cbind(ward=Award$ac, average=Aaverage$ac, complete=Acomplete$ac,
       single=Asingle$ac)
 ```
 
-Plot dendogram for the partitioned data.
+>>Plot dendogram for the partitioned data.
 
 ```{r}
 pltree(Award, cex = 0.6, hang = -1, main = "Dendogram of Agnes-Ward")
@@ -195,6 +202,7 @@ From above Results , 12 are True and 12 are False, so we can say the model may b
 
 ```
 
+### Selecting the cluster that is best cereal for breakfast, which will have high protein, fiber and low in sugar, sodium.
 Choosing the Cluster of Healthy Cereals.
 
 ```{r}
@@ -221,4 +229,5 @@ mean(Clust[Clust$subgrp==4,"rating"])
 
 ```
 
-As we can see that the mean ratings for the subgrp==1 is the highest its 73.84. So its a  best option to choose cluster 1 and the cereals in the cluster 1 for healthy diet.
+>>As we can see that the mean ratings for the subgrp==1 is the highest its 73.84. So its a  best option to choose cluster 1 and the cereals in the cluster 1 for healthy diet.
+We should eliminate the cereals with low nutrition.
